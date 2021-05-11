@@ -5,35 +5,53 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerManager : MonoBehaviour
 {
-    private Rigidbody rb;
+    public Rigidbody rb;
     Vector3 vel;
     private IEnumerator coroutine;
     private bool isGrounded;
     private GlobalManager global;
-    private Transform startPosition;
+    public Vector3 startPosition;
     private Vector3 cameraRelative;
-    public Camera camera;
     public bool canMove = true;
     public bool canSpin = true;
     public float stepRate = 0.25f;
     public float walkSpeed = 5;
     public float runSpeed = 10;
     public float jumpForce = 120;
-    public float spinSpeed = 5;
-
+    public float spinSpeed = 50;
+    public float mouseSensitivity = 500;
     void Start()
     {
-        global = GameObject.Find("*Global*").GetComponent<GlobalManager>();
-        rb = GetComponent<Rigidbody>();
-        startPosition = transform;
+        startPosition = transform.position;
     }
-
     //TODO Player control management
     void Update()
     {
-        if (camera != null)
+        updateInputs();
+        //Input.GetAxis("Mouse Y")
+        transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X"), 0) * Time.deltaTime * mouseSensitivity);
+        if (Input.GetKeyDown(KeyCode.P))
         {
-            cameraRelative = camera.transform.InverseTransformDirection(transform.position);
+            transform.position = startPosition;
+        }
+    }
+    private void jump()
+    {
+        isGrounded = false;
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.contacts[0].normal == Vector3.up)
+        {
+            isGrounded = true;
+        }
+    }
+
+    private void updateInputs() {
+        if (GetComponent<Camera>() != null)
+        {
+            cameraRelative = GetComponent<Camera>().transform.InverseTransformDirection(transform.position);
             print("--------------------");
             if(cameraRelative.x > 0)
             {
@@ -54,16 +72,13 @@ public class PlayerManager : MonoBehaviour
             }
             if(cameraRelative.z > 0)
             {
-                
                 print("Right");
             }
             else
             {
                 print("Left");
             }
-            
         }
-
         vel = rb.velocity;
         float xAxis = Input.GetAxis("Horizontal");
         float zAxis = Input.GetAxis("Vertical");
@@ -85,7 +100,7 @@ public class PlayerManager : MonoBehaviour
             {
                 //rb.AddForce(direction, ForceMode.VelocityChange);
                 //rb.velocity = direction;
-                rb.velocity = transform.forward * walkSpeed;
+                rb.velocity = (transform.forward * walkSpeed) * zAxis;
             }
         }
         if (Input.GetButton("Jump"))
@@ -95,7 +110,6 @@ public class PlayerManager : MonoBehaviour
                 jump();
             }
         }
-
         if(Mathf.Abs(transform.position.y) > 100)
         {
             Debug.Log("Fall out");
@@ -103,19 +117,6 @@ public class PlayerManager : MonoBehaviour
             {
                 global.GameOver();
             }
-        }
-    }
-    private void jump()
-    {
-        isGrounded = false;
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.contacts[0].normal == Vector3.up)
-        {
-            isGrounded = true;
         }
     }
 }

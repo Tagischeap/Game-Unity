@@ -227,7 +227,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 410182719}
-  - component: {fileID: 410182720}
   m_Layer: 0
   m_Name: Kart
   m_TagString: Untagged
@@ -252,36 +251,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &410182720
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 410182718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3afd903d645bcc9409d92941237755e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  kartModel: {fileID: 749648641}
-  kartNormal: {fileID: 1174286287}
-  sphere: {fileID: 861791065}
-  primaryParticles: []
-  secondaryParticles: []
-  drifting: 0
-  acceleration: 5
-  steering: 15
-  gravity: 8
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  frontWheels: {fileID: 1361996934}
-  backWheels: {fileID: 779773878}
-  steeringWheel: {fileID: 1787630404}
-  wheelParticles: {fileID: 0}
-  flashParticles: {fileID: 0}
-  turboColors: []
 --- !u!1001 &645777281
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -380,12 +349,6 @@ Transform:
   m_Father: {fileID: 410182719}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &779773878 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4537127330800474, guid: 18c5fed9cca812a458ccf567688e3a1f,
-    type: 3}
-  m_PrefabInstance: {fileID: 645777281}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &861791062
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,12 +536,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1174286286}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &1361996934 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4603732185530940, guid: 18c5fed9cca812a458ccf567688e3a1f,
-    type: 3}
-  m_PrefabInstance: {fileID: 645777281}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1362381223
 GameObject:
   m_ObjectHideFlags: 0
@@ -675,12 +632,6 @@ Transform:
 --- !u!4 &1760824270 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4996138570027138, guid: 18c5fed9cca812a458ccf567688e3a1f,
-    type: 3}
-  m_PrefabInstance: {fileID: 645777281}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1787630404 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4387924910152776, guid: 18c5fed9cca812a458ccf567688e3a1f,
     type: 3}
   m_PrefabInstance: {fileID: 645777281}
   m_PrefabAsset: {fileID: 0}

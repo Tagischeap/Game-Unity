@@ -5,10 +5,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerManager : MonoBehaviour
 {
-    public Rigidbody rb;
+    private Rigidbody _RB;
     Vector3 vel;
     private IEnumerator coroutine;
-    private bool isGrounded;
+    private bool isGrounded = true;
     private GlobalManager global;
     public Vector3 startPosition;
     private Vector3 cameraRelative;
@@ -22,64 +22,45 @@ public class PlayerManager : MonoBehaviour
     public float mouseSensitivity = 500;
     void Start()
     {
+        _RB = GetComponent<Rigidbody>();
         startPosition = transform.position;
+        Cursor.lockState = CursorLockMode.Locked;
     }
+
     //TODO Player control management
     void Update()
     {
+        vel = _RB.velocity;
+
         updateInputs();
         //Input.GetAxis("Mouse Y")
+
         transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X"), 0) * Time.deltaTime * mouseSensitivity);
         if (Input.GetKeyDown(KeyCode.P))
         {
             transform.position = startPosition;
         }
     }
+    private void move()
+    {
+
+    }
     private void jump()
     {
-        isGrounded = false;
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        _RB.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.contacts[0].normal == Vector3.up)
         {
-            isGrounded = true;
+            //isGrounded = true;
         }
     }
 
-    private void updateInputs() {
-        if (GetComponent<Camera>() != null)
-        {
-            cameraRelative = GetComponent<Camera>().transform.InverseTransformDirection(transform.position);
-            print("--------------------");
-            if(cameraRelative.x > 0)
-            {
-                print("Forward");
-            }
-            else
-            {
-                print("Back");
-            }
-            if(cameraRelative.y > 0)
-            {
-                
-                print("Up");
-            }
-            else
-            {
-                print("Down");
-            }
-            if(cameraRelative.z > 0)
-            {
-                print("Right");
-            }
-            else
-            {
-                print("Left");
-            }
-        }
-        vel = rb.velocity;
+    private void updateInputs()
+    {
+        Camera camera = Camera.main;
+        
         float xAxis = Input.GetAxis("Horizontal");
         float zAxis = Input.GetAxis("Vertical");
         Vector3 aim = new Vector3 ( xAxis, 0, zAxis);
@@ -99,8 +80,8 @@ public class PlayerManager : MonoBehaviour
             if (canMove && isGrounded)
             {
                 //rb.AddForce(direction, ForceMode.VelocityChange);
-                //rb.velocity = direction;
-                rb.velocity = (transform.forward * walkSpeed) * zAxis;
+                _RB.velocity = direction;
+                //rb.velocity = (transform.forward * walkSpeed) * zAxis;
             }
         }
         if (Input.GetButton("Jump"))
@@ -118,6 +99,66 @@ public class PlayerManager : MonoBehaviour
                 global.GameOver();
             }
         }
+    }
+
+    public Quaternion _uprightJoinTargetRot;
+    public float _uprightJointSpringStrength;
+    public float _uprightJointSpringDamper;
+    public void UpdateUprightForce()
+    {
+        Quaternion characterCurrent = transform.rotation;
+        //Quaternion toGoal = UtilsMath.ShortestRotation(_uprightJoinTargetRot, characterCurrent);
+        Quaternion toGoal = Quaternion.Slerp(_uprightJoinTargetRot, characterCurrent, 1);
+        Vector3 rotAxis;
+        float rotDegrees;
+        toGoal.ToAngleAxis(out rotDegrees, out rotAxis);
+        rotAxis.Normalize();
+
+        float rotRadians = rotDegrees * Mathf.Deg2Rad;
+
+        _RB.AddTorque((rotAxis * (rotRadians * _uprightJointSpringStrength)) - (_RB.angularVelocity * _uprightJointSpringDamper));
+    }
+    public float RayLength = 6;
+    public float RideHeight = 5;
+    public float RideSpringStrength = 1;
+    public float RideSpringDamper = 1;
+    private void FixedUpdate()
+    {
+        Vector3 DownDir = transform.TransformDirection(Vector3.down);
+        RaycastHit _rayHit;
+        bool _rayDidHit = Physics.Raycast(transform.position, DownDir, out _rayHit, 1);
+
+        Debug.DrawRay(transform.position, DownDir, Color.red);
+
+        //rb.AddForce(-Physics.gravity, ForceMode.VelocityChange);
+        if (_rayDidHit)
+        {
+            Vector3 vel = _RB.velocity;
+            Vector3 rayDir = transform.TransformDirection(DownDir);
+
+            Vector3 otherVel = Vector3.zero;
+            Rigidbody hitBody = _rayHit.rigidbody;
+            if (hitBody != null)
+            {
+                otherVel = hitBody.velocity;
+            }
+            float rayDirVel = Vector3.Dot(rayDir, vel);
+            float otherDirVel = Vector3.Dot(rayDir, otherVel);
+
+            float relVel = rayDirVel - otherDirVel;
+            float x = _rayHit.distance - RideHeight;
+
+            float springForce = (x * RideSpringStrength) - (relVel * RideSpringDamper);
+            Debug.DrawLine(transform.position, transform.position + (rayDir * springForce), Color.yellow);
+
+            _RB.AddForce(rayDir * springForce);
+            if(hitBody != null)
+            {
+                hitBody.AddForceAtPosition(rayDir * -springForce, _rayHit.point);
+            }
+
+        }
+        UpdateUprightForce();
     }
 }
 

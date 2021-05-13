@@ -104,11 +104,12 @@ public class PlayerManager : MonoBehaviour
     public Quaternion _uprightJoinTargetRot;
     public float _uprightJointSpringStrength;
     public float _uprightJointSpringDamper;
+
     public void UpdateUprightForce()
     {
         Quaternion characterCurrent = transform.rotation;
-        //Quaternion toGoal = UtilsMath.ShortestRotation(_uprightJoinTargetRot, characterCurrent);
-        Quaternion toGoal = Quaternion.Slerp(_uprightJoinTargetRot, characterCurrent, 1);
+        //Quaternion toGoal = MathUtils.ShortestRotation(_uprightJoinTargetRot, characterCurrent);
+        Quaternion toGoal = Quaternion.Slerp(_uprightJoinTargetRot, characterCurrent, 0.5f);
         Vector3 rotAxis;
         float rotDegrees;
         toGoal.ToAngleAxis(out rotDegrees, out rotAxis);
@@ -117,6 +118,7 @@ public class PlayerManager : MonoBehaviour
         float rotRadians = rotDegrees * Mathf.Deg2Rad;
 
         _RB.AddTorque((rotAxis * (rotRadians * _uprightJointSpringStrength)) - (_RB.angularVelocity * _uprightJointSpringDamper));
+        Debug.Log(rotAxis + " | " + toGoal);
     }
     public float RayLength = 6;
     public float RideHeight = 5;

@@ -7252,7 +7252,7 @@ MonoBehaviour:
   spinSpeed: 10
   mouseSensitivity: 100
   _uprightJoinTargetRot: {x: 0, y: 0, z: 0, w: 0}
-  _uprightJointSpringStrength: 75
+  _uprightJointSpringStrength: 50
   _uprightJointSpringDamper: 25
   RayLength: 6
   RideHeight: 5

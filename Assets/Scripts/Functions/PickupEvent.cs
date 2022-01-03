@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class PickupEvent : MonoBehaviour
 {
-    public string itemName = "Item";
+    public string itemName = "Coin";
+    public GameObject inventory;
+
+    public float amount = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -15,14 +18,25 @@ public class PickupEvent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    private void OnTriggerEnter(Collider other) {
+    public void pick()
+    {
+        if (inventory)
+        {
+            inventory.GetComponent<InventoryController>().addToInventory(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
         Debug.Log(itemName + " Trigger Entered");
+        pick();
     }
 
-    private void OnTriggerExit(Collider other) {
+    private void OnTriggerExit(Collider other)
+    {
         Debug.Log(itemName + " Trigger Exited");
     }
 }

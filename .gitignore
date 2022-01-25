@@ -9,11 +9,7 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
-/[Aa]ssets/[Kk]enney/
-/[Aa]ssets/[Pp]olygon/
-/[Aa]ssets/Character Movement Fundamentals/
-/[Aa]ssets/Scenes/Samples/
-/[Aa]ssets/ExplosiveLLC/
+/[Aa]ssets/[Aa]ssets/
 *.meta
 
 # MemoryCaptures can get excessive in size.

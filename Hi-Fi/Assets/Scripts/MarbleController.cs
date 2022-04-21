@@ -29,13 +29,14 @@ public class MarbleController : MonoBehaviour
     [SerializeField] private Transform fRWheelOffset, fLWheelOffset;
     [SerializeField] private Transform rRWheelOffset, rLWheelOffset;
 
-    [SerializeField] private GameObject boxColider;
+    [SerializeField] private BoxCollider boxColider;
 
     // Start is called before the first frame update
     private void Start() 
     {
         //dechilds model
         //sphereRB.transform.parent = null;
+        Physics.IgnoreCollision(sphere.GetComponent<SphereCollider>(), boxColider);
         Physics.IgnoreCollision(sphere.GetComponent<SphereCollider>(), col);
     }
     private void Update()

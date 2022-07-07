@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using StarterAssets;
 
 public class Possession : MonoBehaviour
 {
@@ -16,52 +17,59 @@ public class Possession : MonoBehaviour
     public bool boarded = false;
     public bool near = false;
 
+    private StarterAssetsInputs starterAssetsInputs;
+
     // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (near)
         {
-            if (Input.GetButtonDown("Fire1"))
+            if (starterAssetsInputs.interact) 
             {
+                Debug.Log("Button pressed");
+                starterAssetsInputs.interact = false;
                 if (boarded)
                 {
                     Debug.Log("Exit");
                     boarded = false;
+                    player.GetComponent<ThirdPersonController>().LockPlayerMovement = false;
                 }
                 else
                 {
                     Debug.Log("Entered");
                     boarded = true;
+                    player.GetComponent<ThirdPersonController>().LockPlayerMovement = true;
                 }
                 activate();
             }
         }
-        
     }
 
     private void activate()
     {
         if (boarded)
         {
+            Debug.Log("Fart");
             previousRoot = cam.GetComponent<CinemachineVirtualCamera>().Follow.gameObject;
             player.transform.parent = posses.transform;
-            player.transform.localPosition = Vector3.zero;
+            player.transform.localPosition = Vector3.zero + new Vector3(-0.5f, 1f, 0f);
             player.transform.rotation = Quaternion.Euler(0,-180,0);
             cam.GetComponent<CinemachineVirtualCamera>().Follow = camRoot.transform;
+            posses.GetComponent<MarbleController>().Parked = false;
         }
         else
         {
             cam.GetComponent<CinemachineVirtualCamera>().Follow = previousRoot.transform;
+            posses.GetComponent<MarbleController>().Parked = true;
             near = false;
         }
         posses.GetComponent<MarbleController>().enabled = boarded;
-        player.SetActive(!boarded);
+        //player.SetActive(!boarded);
     }
 
     private void OnTriggerEnter(Collider other) 
@@ -69,6 +77,7 @@ public class Possession : MonoBehaviour
         if (other.tag == "Player")
         {
             near = true;
+            starterAssetsInputs = other.GetComponent<StarterAssetsInputs>();
         }
     }
     private void OnTriggerExit(Collider other)
